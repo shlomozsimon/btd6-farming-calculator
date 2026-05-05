@@ -34,8 +34,11 @@ public class CalculatorScript : MonoBehaviour
     [SerializeField] private float rounds = 1f;
     //farm related factors
     struct FarmBonus{
+        //this counts the banas produced in the round over the base so +2 for 1-0-0 or +4 for 2-0-0
         public int extraBananas;
+        //the extra value of bananas such as a 0-2-0 wich give $20 + 26% (rounded up)
         public float valueMultiplier;
+        //set sell value to 80% for bottom path
         public float sellOverride; // -1 = no override
     }
 
@@ -52,6 +55,7 @@ public class CalculatorScript : MonoBehaviour
     }
     //all the top path benfits
     FarmBonus GetTopPathBonus(){
+        //definding farmBonus then assining extra bananas produdeced accourding to upgrade path
         FarmBonus bonus = new FarmBonus();
 
         if (topPath >= 1)
@@ -81,7 +85,7 @@ public class CalculatorScript : MonoBehaviour
 
         return bonus;
     }
-    //caculating the benfits of combning cross path such as going for a 2-2-0
+    //caculating the benfits of each cross path (extra bananas per top path and extra bana value for middle path) then returns the value of benefits of our current upgrade e.g a 2-2-0 will return +4 bananas and +26% for bananas value
     FarmBonus CombineBonuses(){
         //defining the benfit of each crosspath
         FarmBonus total = new FarmBonus();
@@ -125,14 +129,15 @@ public class CalculatorScript : MonoBehaviour
         return topPath + "-" + middlePath + "-" + bottomPath;
     }
 
-    //caculating sell value of tower
+    //caculating sell value of bananas + bananas prduced in a round
     float GetFinalMultiplier()
     {
+        //defing the bonus accourding to crosspath so an example 2-2-0 value
         FarmBonus bonus = CombineBonuses();
         return bonus.valueMultiplier + monkeyKnowledgeBonus;
     }
 
-    //caculates the amount of bananas * the value of the bananas
+    //caculates the amount of bananas
     int GetBananaCount(){
         FarmBonus bonus = CombineBonuses();
         return bananas + bonus.extraBananas;
@@ -143,11 +148,11 @@ public class CalculatorScript : MonoBehaviour
         return GetBananaCount() * value;
     }
     
-
+    //calculate the value over a peroid of rounds
     float GetTotalIncome(){
         return Mathf.Ceil(GetIncomePerRound() * rounds);
     }
-
+    //calculates the total tower cost of the tower
     float GetTotalCost(){
         return baseCost + upgradeCost;
     }
