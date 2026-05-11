@@ -2,6 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/*coder shlomo simon (gamer101)
+update log: 5/5/2026 started this project and created and shared the git repo as well as create a basic bit a caculations for banana farm (this part got deleted)
+ 5/10/2026 - restarted from the begging and was able to add starting values and a system for creating mk also decided to create update log
+*/
 public class CalculatorScript : MonoBehaviour
 {
     //base value we start with when starting a game
