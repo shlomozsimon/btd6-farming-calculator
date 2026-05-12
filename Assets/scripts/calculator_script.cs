@@ -5,15 +5,70 @@ using UnityEngine;
 /*coder shlomo simon (gamer101)
 update log: 5/5/2026 started this project and created and shared the git repo as well as create a basic bit a caculations for banana farm (this part got deleted)
  5/10/2026 - restarted from the begging and was able to add starting values and a system for creating mk also decided to create update log
+ 5/11/2026 - added more MK/more complex MK as well a boat load of temporary variable that i will need to slowly replace one i define the related field
 */
 public class CalculatorScript : MonoBehaviour
 {
-    //base value we start with when starting a game
+    // ---------------------------------------------------------------------
+    // TEMPORARY VARIABLES
+    // These are placeholder variables so your Monkey Knowledge rules compile
+    // until the full tower systems are implemented.
+    // ---------------------------------------------------------------------
+
+    // Temporary variables for Merchantmen / Trade Empire farming.
+    // "Trade Agreements" adds +$20 to each Merchantman.
+    private int merchant = 0;
+
+    // Temporary variable for Support Chinook crate value.
+    // "Charged Chinooks" increases crate value by 25%.
+    private float helliCrate = 1000f;
+
+    // Temporary variable for Heart of Oak discount.
+    // "Warm Oak" reduces the cost by $100.
+    private int heartOfOakDiscount = 650;
+
+    public enum TowerType{
+        farm,
+        vilage,
+        Merchantman,
+        SupportChinook,
+        Other
+    }
+    [SerializeField]
+     TowerType towerType = TowerType.farm;
+
+    public enum TowerCategory{
+        Primary,
+        Military,
+        Magic,
+        Support
+    }
+
+    // Current tower category being evaluated.
+    [SerializeField]
+    private TowerCategory tower = TowerCategory.Support;
+
+    // Number of military towers already placed.
+    // Used by "Military Conscription".
+    [SerializeField]
+    private int militaryTowerCount = 0;
+
+    // Highest relevant upgrade tier for the tower currently being evaluated.
+    // Used by "Come On Everybody!"
+    [SerializeField]
+    private int upgrade = 0;
+    
+   
+   
+    //end of temp variables
     private int startingCash = 650;
     //sell back value
     private float sellBack = 0.7f;
     //determning weether you can deposit into banks or not
     private bool canDeposit = false;
+    //discount precentage
+    [SerializeField]
+    private float discount = 0.0f;
     //creating a list to store all of the MK we will be defining
     [Header("Monkey Knowledge")]
     [SerializeField]
@@ -51,7 +106,8 @@ public class CalculatorScript : MonoBehaviour
         //looping through the list of mk and looking at each mk inside the list and if isActive is true then we run the code stored in it
         foreach(MonkeyKnowledge MK in monkeyKnowledgeList)
         {
-            if (MK.isActive)
+            //we check to see if there is code for MKRule to run so we dont crash if its missing
+            if (MK.isActive && MK.MKRule != null)
             {
                 //unity runs on a dot matrix method so we get the MK wich is a veriable that is storing the mk we have pulled from the list then we get the MKRule that that Mk data is stroring then we invoke which just runs the code stroed in it
                 MK.MKRule.Invoke();
@@ -91,6 +147,105 @@ public class CalculatorScript : MonoBehaviour
 
             //creating a blank function attached to the mk so if you call this mk you can excute this code
             MKRule = () => canDeposit = true,
+        });
+        //adding the mk that will increase boat prduction by $20
+        monkeyKnowledgeList.Add(new MonkeyKnowledge
+        {
+            MKName = "trade agreements",
+
+            isActive = true,
+
+            //creating a blank function attached to the mk so if you call this mk you can excute this code
+            //note merchant varibal is temp until actualy define boat farming
+            MKRule = () => merchant += 20,
+        });
+        //adding the mk that will increase creats by 25%
+        monkeyKnowledgeList.Add(new MonkeyKnowledge
+        {
+            MKName = "charged chinooks",
+
+            isActive = true,
+
+            //creating a blank function attached to the mk so if you call this mk you can excute this code
+            //note helliCrate varibal is temp until actualy helli farming
+            MKRule = () => helliCrate *= 1.25f,
+        });
+        //adding the mk that will decrease hart of oak by $100
+        monkeyKnowledgeList.Add(new MonkeyKnowledge
+        {
+            MKName = "warm oak",
+
+            isActive = true,
+
+            //creating a blank function attached to the mk so if you call this mk you can excute this code
+            MKRule = () => heartOfOakDiscount -= 100,
+        });
+        /*adding the mk that will increase attack speed by 5% note it is disabled for now since i havent coded tower states which this function will eventualy refrence
+        monkeyKnowledgeList.Add(new MonkeyKnowledge
+        {
+            MKName = "speedy brewing",
+
+            isActive = true,
+
+            //creating a blank function attached to the mk so if you call this mk you can excute this code
+            MKRule = () => alc.attackSpeed *= 1.05f,
+        });*/
+        //adding the mk that will give a 5% discount to all military towers
+        monkeyKnowledgeList.Add(new MonkeyKnowledge
+        {
+            MKName = "advanced logistics",
+
+            isActive = true,
+
+            //creating a blank function attached to the mk so if you call this mk you can excute this code
+            MKRule = () => {
+                if(tower == TowerCategory.Military){
+                    discount = 0.05f;
+                }
+            },
+        });
+        //adding the mk that will increase creats by 25%
+        monkeyKnowledgeList.Add(new MonkeyKnowledge
+        {
+            MKName = "milirary conscription",
+
+            isActive = true,
+
+            //creating a blank function attached to the mk so if you call this mk you can excute this code
+            MKRule = () => {
+                if(tower == TowerCategory.Military && militaryTowerCount > 0){
+                    discount = 0.33f;
+                }
+            },
+        });
+        //adding the mk that will discount by 5% if everthing is tier 3 or 4
+         monkeyKnowledgeList.Add(new MonkeyKnowledge
+        {
+            MKName = "come on everybody!",
+
+            isActive = true,
+
+            //creating a blank function attached to the mk so if you call this mk you can excute this code
+            MKRule = () => {
+                if(tower == TowerCategory.Primary && (upgrade == 3 || upgrade == 4)){
+                    discount = 0.05f;
+                }
+            },
+        });
+        //adding the mk that will discount village and farms by 2% and increase sell back by 2%
+         monkeyKnowledgeList.Add(new MonkeyKnowledge
+        {
+            MKName = "flat pack buildings",
+
+            isActive = true,
+
+            //creating a blank function attached to the mk so if you call this mk you can excute this code
+            MKRule = () => {
+                if(towerType == TowerType.farm || towerType == TowerType.vilage){
+                    discount += 0.02f;
+                    sellBack += 0.02f;
+                }
+            },
         });
     }
 }
