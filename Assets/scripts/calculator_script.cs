@@ -6,7 +6,7 @@ using UnityEngine;
 update log: 5/5/2026 started this project and created and shared the git repo as well as create a basic bit a caculations for banana farm (this part got deleted)
  5/10/2026 - restarted from the begging and was able to add starting values and a system for creating mk also decided to create update log
  5/11/2026 - added more MK/more complex MK as well a boat load of temporary variable that i will need to slowly replace one i define the related field
- 5/12/2026 - finished adding all the MK
+ 5/12/2026 - finished adding all the MK and added a list of bloons and there chldren this will be used later for rounds also added a cash per pop caculator (most of the day was spent throwing my head at the wall trying to figure out why my math was wrong for the bad turns out i was just missing a single ddt)
 */
 public class CalculatorScript : MonoBehaviour
 {
@@ -123,15 +123,65 @@ public class CalculatorScript : MonoBehaviour
     [Header("Monkey Knowledge")]
     [SerializeField]
     private List<MonkeyKnowledge> monkeyKnowledgeList = new List<MonkeyKnowledge>();
+    //creating a list to store all the diffrent types of bloons
+    [Header("bloons")]
+    [SerializeField]
+    private List<BloonType> bloonstypeList = new List<BloonType>();
+
+    //gloable varaibles
+    //created a vairable for bad for when we want to refrence it
+    private BloonType bad;
+    //created a vairable for bloon for when we want to refrence it
+    private BloonType ceramic;
+    //created a vairable for ceramic for when we want to refrence it
+    private BloonType moab;
+    //created a vairable for moab for when we want to refrence it
+    private BloonType bfb;
+    //created a vairable for bfb for when we want to refrence it
+    private BloonType zomg;
+    //created a vairable for zomg for when we want to refrence it
+    private BloonType ddt;
+    //created a vairable for ddt for when we want to refrence it
+    private BloonType rainbow;
+    //created a vairable for rainbow for when we want to refrence it
+    private BloonType zebra;
+    //created a vairable for zebra for when we want to refrence it
+    private BloonType lead;
+    //created a vairable for lead for when we want to refrence it
+    private BloonType black;
+    //created a vairable for black for when we want to refrence it
+    private BloonType white;
+    //created a vairable for white for when we want to refrence it
+    private BloonType purple;
+    //created a vairable for purple for when we want to refrence it
+    private BloonType pink;
+    //created a vairable for pink for when we want to refrence it
+    private BloonType yellow;
+    //created a vairable for bloyellowon for when we want to refrence it
+    private BloonType green;
+    //created a vairable for green for when we want to refrence it
+    private BloonType blue;
+    //created a vairable for blue for when we want to refrence it
+    private BloonType red;
+
 
     private void Start() {
         // Create all Monkey Knowledge entries.
         InitializeMonkeyKnowledge();
+        InitializeBloonType();
 
         //invoc all the mk to test if its working
         testMK();
 
-        // Show the final values after Monkey Knowledge has been applied.
+        //cacluate money for popping all the bloon down to nothing
+        Debug.Log("bad bloon gives $" + CalculateCash(bad));
+        Debug.Log("Ceramic: $" + CalculateCash(ceramic));
+        Debug.Log("MOAB: $" + CalculateCash(moab));
+        Debug.Log("BFB: $" + CalculateCash(bfb));
+        Debug.Log("ZOMG: $" + CalculateCash(zomg));
+        Debug.Log("DDT: $" + CalculateCash(ddt));
+
+        // Show the final values to test some mk
         Debug.Log("Starting Cash: $" + startingCash);
         Debug.Log("Sell Back: " + (sellBack * 100f) + "%");
         Debug.Log("Can Deposit Into Banks: " + canDeposit);
@@ -150,6 +200,30 @@ public class CalculatorScript : MonoBehaviour
         //store costom code that we can call apon inorder excute what ever the mk does note that action canot return a value
          public System.Action MKRule; 
     }
+    //this is a helper function for storing the bloon chiled and respect count of that child which is then stored as a list inside of bloonType
+    [System.Serializable]
+    public class BloonSpawn
+    {
+        public BloonType bloon;
+        public int count;
+    }
+
+    //setting up the property of bloons
+    // setting up the property of bloons
+    public class BloonType
+    {
+        //stores the name of bloon 
+        public string bloonName;
+
+        //stores the speed of the bloon
+        public float speed;
+
+        // List of child bloons and how many of each are spawned
+        public List<BloonSpawn> spawns = new List<BloonSpawn>();
+
+        //stores bloon class/property
+        public string bloonClass;
+    }
 
     private void testMK()
     {
@@ -163,6 +237,248 @@ public class CalculatorScript : MonoBehaviour
                 MK.MKRule.Invoke();
             }
         }
+    }
+
+    //this is a self refrence function that calculates a bloon chash value using a rushin nesting doll style system
+    private int CalculateCash(BloonType bloon)
+    {
+        //safty check for bloon
+        if (bloon == null)
+        {
+            Debug.LogError("CalculateCash was called with a null bloon!");
+            return 0;
+        }
+
+        int total = 1;
+
+        //safty check for bloon child
+        if (bloon.spawns == null)
+            return total;
+
+        //looping through all the bloon spawn
+        foreach (BloonSpawn spawn in bloon.spawns)
+        {
+            //finale safty check
+            if (spawn == null || spawn.bloon == null)
+            {
+                Debug.LogError("Null child found inside " + bloon.bloonName);
+                continue;
+            }
+
+            //adding the amount spawned multipy by the child which then calls on itself until we whent through all the bloon children
+            total += spawn.count * CalculateCash(spawn.bloon);
+        }
+
+        return total;
+    }
+
+    // define each of the bloons and then pushing them to the bloontype list
+private void InitializeBloonType()
+    {
+        red = new BloonType
+        {
+            bloonName = "red",
+            speed = 1.0f,
+            spawns = new List<BloonSpawn>(),
+            bloonClass = "bloon"
+        };
+
+        blue = new BloonType
+        {
+            bloonName = "blue",
+            speed = 1.4f,
+            spawns = new List<BloonSpawn>
+            {
+                new BloonSpawn { bloon = red, count = 1 }
+            },
+            bloonClass = "bloon"
+        };
+
+        green = new BloonType
+        {
+            bloonName = "green",
+            speed = 1.8f,
+            spawns = new List<BloonSpawn>
+            {
+                new BloonSpawn { bloon = blue, count = 1 }
+            },
+            bloonClass = "bloon"
+        };
+
+        yellow = new BloonType
+        {
+            bloonName = "yellow",
+            speed = 3.2f,
+            spawns = new List<BloonSpawn>
+            {
+                new BloonSpawn { bloon = green, count = 1 }
+            },
+            bloonClass = "bloon"
+        };
+
+        pink = new BloonType
+        {
+            bloonName = "pink",
+            speed = 3.5f,
+            spawns = new List<BloonSpawn>
+            {
+                new BloonSpawn { bloon = yellow, count = 1 }
+            },
+            bloonClass = "bloon"
+        };
+
+        black = new BloonType
+        {
+            bloonName = "black",
+            speed = 1.8f,
+            spawns = new List<BloonSpawn>
+            {
+                new BloonSpawn { bloon = pink, count = 2 }
+            },
+            bloonClass = "black"
+        };
+
+        purple = new BloonType
+        {
+            bloonName = "purple",
+            speed = 3.0f,
+            spawns = new List<BloonSpawn>
+            {
+                new BloonSpawn { bloon = pink, count = 2 }
+            },
+            bloonClass = "purple"
+        };
+
+        white = new BloonType
+        {
+            bloonName = "white",
+            speed = 2.0f,
+            spawns = new List<BloonSpawn>
+            {
+                new BloonSpawn { bloon = pink, count = 2 }
+            },
+            bloonClass = "white"
+        };
+
+        lead = new BloonType
+        {
+            bloonName = "lead",
+            speed = 1.0f,
+            spawns = new List<BloonSpawn>
+            {
+                new BloonSpawn { bloon = black, count = 2 }
+            },
+            bloonClass = "lead"
+        };
+
+        zebra = new BloonType
+        {
+            bloonName = "zebra",
+            speed = 1.8f,
+            spawns = new List<BloonSpawn>
+            {
+                new BloonSpawn { bloon = white, count = 1 },
+                new BloonSpawn { bloon = black, count = 1 }
+            },
+            bloonClass = "zebra"
+        };
+
+        rainbow = new BloonType
+        {
+            bloonName = "rainbow",
+            speed = 2.2f,
+            spawns = new List<BloonSpawn>
+            {
+                new BloonSpawn { bloon = zebra, count = 2 }
+            },
+            bloonClass = "bloon"
+        };
+
+        ceramic = new BloonType
+        {
+            bloonName = "ceramic",
+            speed = 2.5f,
+            spawns = new List<BloonSpawn>
+            {
+                new BloonSpawn { bloon = rainbow, count = 2 }
+            },
+            bloonClass = "ceramic"
+        };
+        
+        moab = new BloonType
+        {
+            bloonName = "moab",
+            speed = 1.0f,
+            spawns = new List<BloonSpawn>
+            {
+                new BloonSpawn { bloon = ceramic, count = 4 }
+            },
+            bloonClass = "moab"
+        };
+        
+        bfb = new BloonType
+        {
+            bloonName = "bfb",
+            speed = 0.25f,
+            spawns = new List<BloonSpawn>
+            {
+                new BloonSpawn { bloon = moab, count = 4 }
+            },
+            bloonClass = "moab"
+        };
+
+        zomg = new BloonType
+        {
+            bloonName = "zomg",
+            speed = 0.18f,
+            spawns = new List<BloonSpawn>
+            {
+                new BloonSpawn { bloon = bfb, count = 4 }
+            },
+            bloonClass = "moab"
+        };
+
+        ddt = new BloonType
+        {
+            bloonName = "ddt",
+            speed = 2.64f,
+            spawns = new List<BloonSpawn>
+            {
+                new BloonSpawn { bloon = ceramic, count = 4 }
+            },
+            bloonClass = "moab"
+        };
+
+        bad = new BloonType
+        {
+            bloonName = "bad",
+            speed = 0.18f,
+            spawns = new List<BloonSpawn>
+            {
+                new BloonSpawn { bloon = zomg, count = 2 },
+                new BloonSpawn { bloon = ddt, count = 3 }
+            },
+            bloonClass = "moab"
+        };
+
+        // Add all bloons to the master list
+        bloonstypeList.Add(red);
+        bloonstypeList.Add(blue);
+        bloonstypeList.Add(green);
+        bloonstypeList.Add(yellow);
+        bloonstypeList.Add(pink);
+        bloonstypeList.Add(black);
+        bloonstypeList.Add(purple);
+        bloonstypeList.Add(white);
+        bloonstypeList.Add(lead);
+        bloonstypeList.Add(zebra);
+        bloonstypeList.Add(rainbow);
+        bloonstypeList.Add(ceramic);
+        bloonstypeList.Add(moab);
+        bloonstypeList.Add(bfb);
+        bloonstypeList.Add(zomg);
+        bloonstypeList.Add(ddt);
+        bloonstypeList.Add(bad);
     }
 
     //creating the mk with all of its atributes and then pushing it into a list
