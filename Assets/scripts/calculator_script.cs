@@ -7,6 +7,7 @@ update log: 5/5/2026 started this project and created and shared the git repo as
  5/10/2026 - restarted from the begging and was able to add starting values and a system for creating mk also decided to create update log
  5/11/2026 - added more MK/more complex MK as well a boat load of temporary variable that i will need to slowly replace one i define the related field
  5/12/2026 - finished adding all the MK and added a list of bloons and there chldren this will be used later for rounds also added a cash per pop caculator (most of the day was spent throwing my head at the wall trying to figure out why my math was wrong for the bad turns out i was just missing a single ddt)
+ 5/13/2026 - started working on the round set list this may take longer since i need some help with this part as well as learn more about this topic so i can be well versed in it and right and fix the code quickly
 */
 public class CalculatorScript : MonoBehaviour
 {
@@ -127,6 +128,10 @@ public class CalculatorScript : MonoBehaviour
     [Header("bloons")]
     [SerializeField]
     private List<BloonType> bloonstypeList = new List<BloonType>();
+    //creating a list to store all the data of each round
+    [Header("rounds")]
+    [SerializeField]
+    private List<round> roundList = new List<round>();
 
     //gloable varaibles
     //created a vairable for bad for when we want to refrence it
@@ -169,6 +174,7 @@ public class CalculatorScript : MonoBehaviour
         // Create all Monkey Knowledge entries.
         InitializeMonkeyKnowledge();
         InitializeBloonType();
+        InitializeStandardRounds();
 
         //invoc all the mk to test if its working
         testMK();
@@ -225,6 +231,36 @@ public class CalculatorScript : MonoBehaviour
         public string bloonClass;
     }
 
+    //this stores the data for the round such as how many bloons there are and other stuff
+    public class roundInfo
+    {
+        // Which bloon appears
+        public BloonType bloon;
+
+        // Number of this bloon to spawn
+        public int count;
+
+        // Time when spawning starts (seconds)
+        public float startTime;
+
+        // Delay between each bloon
+        public float interval = 0.1f;
+    }
+
+    //store the data for each round and reletive info
+    public class round
+    {
+        // Round number (e.g. 1, 40, 100)
+        public int roundNumber;
+
+        // All bloon spawn in this round
+        public List<roundInfo> spawns = new List<roundInfo>();
+
+        // Cash multiplier (1.0 = normal, 0.5 = half cash)
+        public float cashMultiplier = 1.0f;
+
+    }
+
     private void testMK()
     {
         //looping through the list of mk and looking at each mk inside the list and if isActive is true then we run the code stored in it
@@ -272,8 +308,28 @@ public class CalculatorScript : MonoBehaviour
         return total;
     }
 
+    //
+    private void InitializeStandardRounds()
+    {
+        round round1 = new round
+        {
+            roundNumber = 1,
+            cashMultiplier = 1.0f,
+        };
+
+        round1.spawns.Add(new roundInfo
+        {
+            bloon = red,
+            count = 12,
+            startTime = 0f,
+            interval = 0.5f
+        });
+
+        roundList.Add(round1);
+    }
+
     // define each of the bloons and then pushing them to the bloontype list
-private void InitializeBloonType()
+    private void InitializeBloonType()
     {
         red = new BloonType
         {
