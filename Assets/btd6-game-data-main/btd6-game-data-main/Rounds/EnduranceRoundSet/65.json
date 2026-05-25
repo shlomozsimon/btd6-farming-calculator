@@ -1,0 +1,203 @@
+{
+  "$type": "Il2CppAssets.Scripts.Models.Rounds.RoundModel, Assembly-CSharp",
+  "groups": [
+    {
+      "$type": "Il2CppAssets.Scripts.Models.Rounds.BloonGroupModel, Assembly-CSharp",
+      "bloon": "Moab",
+      "start": 0.0,
+      "end": 360.0,
+      "count": 3,
+      "name": ""
+    },
+    {
+      "$type": "Il2CppAssets.Scripts.Models.Rounds.BloonGroupModel, Assembly-CSharp",
+      "bloon": "Ceramic",
+      "start": 0.0,
+      "end": 540.0,
+      "count": 12,
+      "name": ""
+    },
+    {
+      "$type": "Il2CppAssets.Scripts.Models.Rounds.BloonGroupModel, Assembly-CSharp",
+      "bloon": "Bfb",
+      "start": 486.00003,
+      "end": 486.00003,
+      "count": 1,
+      "name": ""
+    },
+    {
+      "$type": "Il2CppAssets.Scripts.Models.Rounds.BloonGroupModel, Assembly-CSharp",
+      "bloon": "CeramicFortified",
+      "start": 270.0,
+      "end": 540.0,
+      "count": 2,
+      "name": ""
+    }
+  ],
+  "emissions_": null,
+  "emissions": [
+    {
+      "$type": "Il2CppAssets.Scripts.Models.Rounds.BloonEmissionModel, Assembly-CSharp",
+      "bloon": "Moab",
+      "time": 0.0,
+      "emissionIndex": 0,
+      "isCustomBossEmission": false,
+      "towerSetImmunity": 0,
+      "name": ""
+    },
+    {
+      "$type": "Il2CppAssets.Scripts.Models.Rounds.BloonEmissionModel, Assembly-CSharp",
+      "bloon": "Moab",
+      "time": 180.0,
+      "emissionIndex": 0,
+      "isCustomBossEmission": false,
+      "towerSetImmunity": 0,
+      "name": ""
+    },
+    {
+      "$type": "Il2CppAssets.Scripts.Models.Rounds.BloonEmissionModel, Assembly-CSharp",
+      "bloon": "Moab",
+      "time": 360.0,
+      "emissionIndex": 0,
+      "isCustomBossEmission": false,
+      "towerSetImmunity": 0,
+      "name": ""
+    },
+    {
+      "$type": "Il2CppAssets.Scripts.Models.Rounds.BloonEmissionModel, Assembly-CSharp",
+      "bloon": "Ceramic",
+      "time": 0.0,
+      "emissionIndex": 0,
+      "isCustomBossEmission": false,
+      "towerSetImmunity": 0,
+      "name": ""
+    },
+    {
+      "$type": "Il2CppAssets.Scripts.Models.Rounds.BloonEmissionModel, Assembly-CSharp",
+      "bloon": "Ceramic",
+      "time": 49.090908,
+      "emissionIndex": 0,
+      "isCustomBossEmission": false,
+      "towerSetImmunity": 0,
+      "name": ""
+    },
+    {
+      "$type": "Il2CppAssets.Scripts.Models.Rounds.BloonEmissionModel, Assembly-CSharp",
+      "bloon": "Ceramic",
+      "time": 98.181816,
+      "emissionIndex": 0,
+      "isCustomBossEmission": false,
+      "towerSetImmunity": 0,
+      "name": ""
+    },
+    {
+      "$type": "Il2CppAssets.Scripts.Models.Rounds.BloonEmissionModel, Assembly-CSharp",
+      "bloon": "Ceramic",
+      "time": 147.27272,
+      "emissionIndex": 0,
+      "isCustomBossEmission": false,
+      "towerSetImmunity": 0,
+      "name": ""
+    },
+    {
+      "$type": "Il2CppAssets.Scripts.Models.Rounds.BloonEmissionModel, Assembly-CSharp",
+      "bloon": "Ceramic",
+      "time": 196.36363,
+      "emissionIndex": 0,
+      "isCustomBossEmission": false,
+      "towerSetImmunity": 0,
+      "name": ""
+    },
+    {
+      "$type": "Il2CppAssets.Scripts.Models.Rounds.BloonEmissionModel, Assembly-CSharp",
+      "bloon": "Ceramic",
+      "time": 245.45454,
+      "emissionIndex": 0,
+      "isCustomBossEmission": false,
+      "towerSetImmunity": 0,
+      "name": ""
+    },
+    {
+      "$type": "Il2CppAssets.Scripts.Models.Rounds.BloonEmissionModel, Assembly-CSharp",
+      "bloon": "Ceramic",
+      "time": 294.54544,
+      "emissionIndex": 0,
+      "isCustomBossEmission": false,
+      "towerSetImmunity": 0,
+      "name": ""
+    },
+    {
+      "$type": "Il2CppAssets.Scripts.Models.Rounds.BloonEmissionModel, Assembly-CSharp",
+      "bloon": "Ceramic",
+      "time": 343.63635,
+      "emissionIndex": 0,
+      "isCustomBossEmission": false,
+      "towerSetImmunity": 0,
+      "name": ""
+    },
+    {
+      "$type": "Il2CppAssets.Scripts.Models.Rounds.BloonEmissionModel, Assembly-CSharp",
+      "bloon": "Ceramic",
+      "time": 392.72726,
+      "emissionIndex": 0,
+      "isCustomBossEmission": false,
+      "towerSetImmunity": 0,
+      "name": ""
+    },
+    {
+      "$type": "Il2CppAssets.Scripts.Models.Rounds.BloonEmissionModel, Assembly-CSharp",
+      "bloon": "Ceramic",
+      "time": 441.81818,
+      "emissionIndex": 0,
+      "isCustomBossEmission": false,
+      "towerSetImmunity": 0,
+      "name": ""
+    },
+    {
+      "$type": "Il2CppAssets.Scripts.Models.Rounds.BloonEmissionModel, Assembly-CSharp",
+      "bloon": "Ceramic",
+      "time": 490.9091,
+      "emissionIndex": 0,
+      "isCustomBossEmission": false,
+      "towerSetImmunity": 0,
+      "name": ""
+    },
+    {
+      "$type": "Il2CppAssets.Scripts.Models.Rounds.BloonEmissionModel, Assembly-CSharp",
+      "bloon": "Ceramic",
+      "time": 540.0,
+      "emissionIndex": 0,
+      "isCustomBossEmission": false,
+      "towerSetImmunity": 0,
+      "name": ""
+    },
+    {
+      "$type": "Il2CppAssets.Scripts.Models.Rounds.BloonEmissionModel, Assembly-CSharp",
+      "bloon": "Bfb",
+      "time": 486.00003,
+      "emissionIndex": 0,
+      "isCustomBossEmission": false,
+      "towerSetImmunity": 0,
+      "name": ""
+    },
+    {
+      "$type": "Il2CppAssets.Scripts.Models.Rounds.BloonEmissionModel, Assembly-CSharp",
+      "bloon": "CeramicFortified",
+      "time": 270.0,
+      "emissionIndex": 0,
+      "isCustomBossEmission": false,
+      "towerSetImmunity": 0,
+      "name": ""
+    },
+    {
+      "$type": "Il2CppAssets.Scripts.Models.Rounds.BloonEmissionModel, Assembly-CSharp",
+      "bloon": "CeramicFortified",
+      "time": 540.0,
+      "emissionIndex": 0,
+      "isCustomBossEmission": false,
+      "towerSetImmunity": 0,
+      "name": ""
+    }
+  ],
+  "name": ""
+}

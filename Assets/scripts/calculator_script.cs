@@ -8,6 +8,8 @@ update log: 5/5/2026 started this project and created and shared the git repo as
  5/11/2026 - added more MK/more complex MK as well a boat load of temporary variable that i will need to slowly replace one i define the related field
  5/12/2026 - finished adding all the MK and added a list of bloons and there chldren this will be used later for rounds also added a cash per pop caculator (most of the day was spent throwing my head at the wall trying to figure out why my math was wrong for the bad turns out i was just missing a single ddt)
  5/13/2026 - started working on the round set list this may take longer since i need some help with this part as well as learn more about this topic so i can be well versed in it and right and fix the code quickly
+ 5/17/2026 - imported all the game files from doombulble git repo used for help moding but i will be pulling data so i dont need to rewrite things like how long rounds last or what are in a round then we will add our caculations on top of it
+ 5/24/2026 - i decided that i will just manualy code everything instead because i am not knowadlagbale enought to mess with the game jsons files inorder to actualy to everything i need for what i actualy accomplished is add the first 10 standard round and set up a function for quicly filling out round data
 */
 public class CalculatorScript : MonoBehaviour
 {
@@ -126,12 +128,15 @@ public class CalculatorScript : MonoBehaviour
     private List<MonkeyKnowledge> monkeyKnowledgeList = new List<MonkeyKnowledge>();
     //creating a list to store all the diffrent types of bloons
     [Header("bloons")]
-    [SerializeField]
-    private List<BloonType> bloonstypeList = new List<BloonType>();
+    public static List<BloonType> bloonstypeList = new List<BloonType>();
     //creating a list to store all the data of each round
     [Header("rounds")]
     [SerializeField]
-    private List<round> roundList = new List<round>();
+    private List<Round> roundList = new List<Round>();
+
+    // this array stores all the json files conataining each round
+    [SerializeField]
+    private TextAsset[] normalRoundSet;
 
     //gloable varaibles
     //created a vairable for bad for when we want to refrence it
@@ -216,6 +221,7 @@ public class CalculatorScript : MonoBehaviour
 
     //setting up the property of bloons
     // setting up the property of bloons
+    [System.Serializable]
     public class BloonType
     {
         //stores the name of bloon 
@@ -231,34 +237,41 @@ public class CalculatorScript : MonoBehaviour
         public string bloonClass;
     }
 
-    //this stores the data for the round such as how many bloons there are and other stuff
-    public class roundInfo
+    // Stores ONE spawn group inside a round
+    [System.Serializable]
+    public class RoundSpawn
     {
-        // Which bloon appears
+        // Which bloon spawns
         public BloonType bloon;
 
-        // Number of this bloon to spawn
+        // How many spawn
         public int count;
-
-        // Time when spawning starts (seconds)
-        public float startTime;
-
-        // Delay between each bloon
-        public float interval = 0.1f;
     }
 
-    //store the data for each round and reletive info
-    public class round
+    // Stores an entire round
+    [System.Serializable]
+    public class Round
     {
-        // Round number (e.g. 1, 40, 100)
+        // Round number
         public int roundNumber;
 
-        // All bloon spawn in this round
-        public List<roundInfo> spawns = new List<roundInfo>();
+        // All spawn groups in the round
+        public List<RoundSpawn> spawns = new List<RoundSpawn>();
 
-        // Cash multiplier (1.0 = normal, 0.5 = half cash)
+        // Cash modifier
         public float cashMultiplier = 1.0f;
 
+        // Time when the last bloon spawns (important for farm tics and penelty timer)
+        public float endTime;
+    }
+
+    private void AddSpawn(Round round, BloonType bloon, int count)
+    {
+        round.spawns.Add(new RoundSpawn
+        {
+            bloon = bloon,
+            count = count
+        });
     }
 
     private void testMK()
@@ -276,7 +289,7 @@ public class CalculatorScript : MonoBehaviour
     }
 
     //this is a self refrence function that calculates a bloon chash value using a rushin nesting doll style system
-    private int CalculateCash(BloonType bloon)
+    public int CalculateCash(BloonType bloon)
     {
         //safty check for bloon
         if (bloon == null)
@@ -308,24 +321,169 @@ public class CalculatorScript : MonoBehaviour
         return total;
     }
 
-    //
+    // this function take each of the bloons that are in the round and applies the caculation to each of them
+    public int CalculateRoundCash(Round currentRound)
+    {
+        // Safety check
+        if (currentRound == null)
+        {
+            Debug.LogError("Round was null!");
+            return 0;
+        }
+
+        int totalCash = 0;
+
+        // Loop through all spawn groups
+        foreach (RoundSpawn spawn in currentRound.spawns)
+        {
+            // Safety checks
+            if (spawn == null || spawn.bloon == null)
+                continue;
+
+            // Get value of ONE bloon
+            int bloonCash = CalculateCash(spawn.bloon);
+
+            // Multiply by amount spawned
+            totalCash += bloonCash * spawn.count;
+        }
+
+        // Apply round multiplier
+        totalCash = Mathf.RoundToInt(totalCash * currentRound.cashMultiplier);
+
+        return totalCash;
+    }
+
+    //this initalizes the data for each round then defines the diffrent rushes in each round (note it is grouped by bloon layering)
     private void InitializeStandardRounds()
     {
-        round round1 = new round
+        // ROUND 1
+        Round round1 = new Round
         {
             roundNumber = 1,
             cashMultiplier = 1.0f,
+            endTime = 17.51f,
         };
 
-        round1.spawns.Add(new roundInfo
-        {
-            bloon = red,
-            count = 12,
-            startTime = 0f,
-            interval = 0.5f
-        });
+        AddSpawn(round1, red, 20);
 
         roundList.Add(round1);
+
+        // ROUND 2
+        Round round2 = new Round
+        {
+            roundNumber = 2,
+            cashMultiplier = 1.0f,
+            endTime = 19.00f,
+        };
+
+        AddSpawn(round2, red, 35);
+
+        roundList.Add(round2);
+
+        // ROUND 3
+        Round round3 = new Round
+        {
+            roundNumber = 3,
+            cashMultiplier = 1.0f,
+            endTime = 16.71f,
+        };
+
+        AddSpawn(round3, red, 25);
+        AddSpawn(round3, blue, 5);
+
+        roundList.Add(round3);
+
+        // ROUND 4
+        Round round4 = new Round
+        {
+            roundNumber = 4,
+            cashMultiplier = 1.0f,
+            endTime = 17.31f,
+        };
+
+        AddSpawn(round4, red, 35);
+        AddSpawn(round4, blue, 18);
+
+        roundList.Add(round4);
+
+        // ROUND 5
+        Round round5 = new Round
+        {
+            roundNumber = 5,
+            cashMultiplier = 1.0f,
+            endTime = 16.50f,
+        };
+
+        AddSpawn(round5, blue, 27);
+        AddSpawn(round5, red, 5);
+
+        roundList.Add(round5);
+
+        // ROUND 6
+        Round round6 = new Round
+        {
+            roundNumber = 6,
+            cashMultiplier = 1.0f,
+            endTime = 18.70f,
+        };
+
+        AddSpawn(round6, red, 15);
+        AddSpawn(round6, green, 4);
+        AddSpawn(round6, blue, 15);
+
+        roundList.Add(round6);
+
+        // ROUND 7
+        Round round7 = new Round
+        {
+            roundNumber = 7,
+            cashMultiplier = 1.0f,
+            endTime = 26.80f,
+        };
+
+        AddSpawn(round7, green, 5);
+        AddSpawn(round7, blue, 20);
+        AddSpawn(round7, red, 20);
+
+        roundList.Add(round7);
+
+        // ROUND 8
+        Round round8 = new Round
+        {
+            roundNumber = 8,
+            cashMultiplier = 1.0f,
+            endTime = 28.87f,
+        };
+
+        AddSpawn(round8, blue, 20);
+        AddSpawn(round8, green, 14);
+        AddSpawn(round7, red, 10);
+
+        roundList.Add(round8);
+
+        // ROUND 9
+        Round round9 = new Round
+        {
+            roundNumber = 9,
+            cashMultiplier = 1.0f,
+            endTime = 18.95f,
+        };
+
+        AddSpawn(round9, green, 30);
+
+        roundList.Add(round9);
+
+        // ROUND 10
+        Round round10 = new Round
+        {
+            roundNumber = 10,
+            cashMultiplier = 1.0f,
+            endTime = 47.99f,
+        };
+
+        AddSpawn(round10, blue, 102);
+
+        roundList.Add(round10);
     }
 
     // define each of the bloons and then pushing them to the bloontype list
